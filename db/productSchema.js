@@ -5,11 +5,16 @@ let productSchema = new mongoose.Schema({
     iconurl : Number,
     description: String,
     price: Number,
-    wash:Number,
-    bleach: Number,
-    iron:Number,
-    towel: Number
-});
+    
+    addOn: [
+        {
+            type: String,
+            price: Number,
+            status: Boolean
+        }
+    ],
+    
+},{ typeKey: '$type' });
 
 
 exports.productSchema = productSchema;
