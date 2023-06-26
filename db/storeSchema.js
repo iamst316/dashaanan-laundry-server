@@ -5,7 +5,8 @@ let storeSchema = new mongoose.Schema({
     storeName: String,
     label: String,
     address: String,
-    telephone: Number
+    telephone: Number,
+    delivery_charges: Number
 });
 
 
