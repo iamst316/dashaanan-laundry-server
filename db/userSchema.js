@@ -6,8 +6,7 @@ let userSchema = new mongoose.Schema({
     phone:Number,
     addresses:[{
         stateName:String,
-        district:String,
-        pincode:Number,
+        city:String,
         address:String,
     }],
     password:String,
@@ -18,6 +17,7 @@ let userSchema = new mongoose.Schema({
                 quantity: Number,
                 washType : Array,
                 price: Number,
+                total: Number
             }
         ],
         orderStatus :String,
