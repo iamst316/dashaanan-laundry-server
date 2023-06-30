@@ -62,6 +62,17 @@ app.post("/register",async(req,res)=>{
     }
 })
 
+//--------------------------------------------------
+
+app.post("/login",async(req,res)=>{
+    const user = await userModel.find({email:req.body.email})
+    if (user.length==1){
+        console.log("User Exists",user)
+
+    }
+    
+})
+
 //------------------------------------------------
 app.listen(Port,()=>{
     console.log("Server Running at Port ",Port);
