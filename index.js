@@ -9,6 +9,7 @@ const app = express() ;
 require('dotenv').config()
 const cors = require('cors');
 const jwt = require('jsonwebtoken')
+const razorpay = require("razorpay");
 const { userSchema } = require('./db/userSchema');
 connection();
 const Port = 5000;
@@ -100,6 +101,31 @@ function verifyToken(req,res,next){
     }
 }
 
+
+//------------------------------------------------
+
+app.post("/payment", async (req,res)=>{
+    try{
+        const instance = new razorpay({
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_SECRET,
+        })
+        const options = {
+            amount: 50000,
+            currency: "INR",
+            receipt: "receipt_order_74394",
+        };
+        const order = await instance.orders.create(options);
+
+        if (!order) return res.status(500).send("Some error occured");
+        
+        res.json(order);
+
+    }
+    catch{
+        res.status(500).send(error);
+    }
+})
 //------------------------------------------------
 app.listen(Port,()=>{
     console.log("Server Running at Port ",Port);
