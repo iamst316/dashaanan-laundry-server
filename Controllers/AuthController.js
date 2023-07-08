@@ -75,3 +75,25 @@ module.exports.getStores = async (req, res, next) => {
     console.error(error);
   }
 };
+
+module.exports.addStore = async(req,res,next) => {
+  try {
+    const { storeName, label, address, telephone, delivery_charges } = req.body;
+    const existingStore = await storeModel.findOne({ storeName });
+    if (existingStore) {
+      return res.json({ message: "Store already exists" });
+    }
+    const store = await storeModel.create({ storeName, label, address, telephone, delivery_charges });
+    // const token = createSecretToken(user._id);
+    // res.cookie("token", token, {
+    //   withCredentials: true,
+    //   httpOnly: false,
+    // });
+    res
+      .status(201)
+      .json({ message: "store added successfully", success: true, store });
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+}

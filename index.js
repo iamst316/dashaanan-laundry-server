@@ -23,21 +23,8 @@ const { MONGO_URL, PORT } = process.env;
 // let userModel = mongoose.model("users",userSchema);
 
 //------------------------------------------------
-// const add = async () => {
-// 	await productModel.deleteMany({});
-// 	await productModel.insertMany(products);
-//     await storeModel.deleteMany({});
-// 	await storeModel.insertMany(stores);
-// 	console.log("added");
-// };
 
-// add();
-//------------------------------------------------
 
-// app.get("/store",async (req,res)=>{
-//     const list = await storeModel.find();
-//     res.send(list);
-// });
 
 
 
