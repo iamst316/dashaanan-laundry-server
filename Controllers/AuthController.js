@@ -1,15 +1,17 @@
 const User = require("../Models/UserModel");
+const productModel = require("../Models/productModel");
+const storeModel = require("../Models/storeModel");
 const { createSecretToken } = require("../util/SecretToken");
 const bcrypt = require("bcrypt");
 
 module.exports.Signup = async (req, res, next) => {
   try {
-    const { email, password, username, createdAt } = req.body;
+    const { email, password, name, createdAt,orders, addresses,phone } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.json({ message: "User already exists" });
     }
-    const user = await User.create({ email, password, username, createdAt });
+    const user = await User.create({ email, password, name, createdAt,orders, addresses,phone });
     const token = createSecretToken(user._id);
     res.cookie("token", token, {
       withCredentials: true,
@@ -49,3 +51,27 @@ module.exports.Login = async (req, res, next) => {
     console.error(error);
   }
 }
+
+module.exports.getProducts = async (req, res, next) => {
+  try {
+    const list = await productModel.find();
+    res
+      .status(201)
+      .send(list);
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports.getStores = async (req, res, next) => {
+  try {
+    const list = await storeModel.find();
+    res
+      .status(201)
+      .send(list);
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+};

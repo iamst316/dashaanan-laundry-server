@@ -34,49 +34,44 @@ const { MONGO_URL, PORT } = process.env;
 // add();
 //------------------------------------------------
 
-app.get("/store",async (req,res)=>{
-    const list = await storeModel.find();
-    res.send(list);
-});
+// app.get("/store",async (req,res)=>{
+//     const list = await storeModel.find();
+//     res.send(list);
+// });
 
-app.get("/products",async (req,res)=>{
-    const list = await productModel.find();
-    // console.log("length--->",list.length)
-    res.send(list);
-});
-//------------------------------------------------
 
-app.post("/register",async(req,res)=>{
-    const user = await userModel.find({email:req.body.email})
-    if (user.length==1){
-        console.log("User Exists",user)
 
-    }
-    else{
-        // console.log(req.body)
-        let newuser= new userModel(req.body);
-        newuser.name = req.body.firstname+" "+req.body.lastname;
-        newuser.addresses = [
-            ...newuser.addresses,
-            {
-                stateName:req.body.state,
-                city:req.body.city,
-                address:req.body.address,
-            }
-        ]
-        newuser.save()
-        console.log("User Registered")
-    }
-})
+// app.post("/register",async(req,res)=>{
+//     const user = await userModel.find({email:req.body.email})
+//     if (user.length==1){
+//         console.log("User Exists",user)
+
+//     }
+//     else{
+//         // console.log(req.body)
+//         let newuser= new userModel(req.body);
+//         newuser.name = req.body.firstname+" "+req.body.lastname;
+//         newuser.addresses = [
+//             ...newuser.addresses,
+//             {
+//                 stateName:req.body.state,
+//                 city:req.body.city,
+//                 address:req.body.address,
+//             }
+//         ]
+//         newuser.save()
+//         console.log("User Registered")
+//     }
+// })
 //----------------------------------------------------
-app.post("/login",async(req,res)=>{
-    const user = await userModel.find({email:req.body.email})
+// app.post("/login",async(req,res)=>{
+//     const user = await userModel.find({email:req.body.email})
 
-    jwt.sign({user},secretkey,{expiresIn:'1h'},(err,token)=>{
-        console.log("token-->",token)
-        res.json({token})
-    })
-})
+//     jwt.sign({user},secretkey,{expiresIn:'1h'},(err,token)=>{
+//         console.log("token-->",token)
+//         res.json({token})
+//     })
+// })
 //----------------------------------------------------
 app.post("/profile",verifyToken,(req,res)=>{
     jwt.verify(req.token,secretkey,(err,authData)=>{
