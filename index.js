@@ -1,34 +1,37 @@
 const express = require('express') ;
 const mongoose = require("mongoose");
-const connection = require('./db/connection');
-const {products} = require('./db/products');
-const {productSchema} = require('./db/productSchema');
-const {stores} = require("./db/stores");
-const {storeSchema} = require("./db/storeSchema");
+// const connection = require('./db/connection');
+// const {products} = require('./db/products');
+// const {productSchema} = require('./db/productSchema');
+// const {stores} = require("./db/stores");
+// const {storeSchema} = require("./db/storeSchema");
 const app = express() ;
 require('dotenv').config()
 const cors = require('cors');
 const jwt = require('jsonwebtoken')
 const razorpay = require("razorpay");
-const { userSchema } = require('./db/userSchema');
-connection();
-const Port = 5000;
-const secretkey = process.env.SECRET_KEY;
-app.use(express.json());
-let storeModel = mongoose.model("stores",storeSchema);
-let productModel = mongoose.model("products",productSchema);
-let userModel = mongoose.model("users",userSchema);
-app.use(cors());
-//------------------------------------------------
-const add = async () => {
-	await productModel.deleteMany({});
-	await productModel.insertMany(products);
-    await storeModel.deleteMany({});
-	await storeModel.insertMany(stores);
-	console.log("added");
-};
+const cookieParser = require("cookie-parser");
+const authRoute = require("./Routes/AuthRoute");
+const { MONGO_URL, PORT } = process.env;
+// const { userSchema } = require('./db/userSchema');
+// connection();
+// const Port = 5000;
+// const secretkey = process.env.SECRET_KEY;
+// app.use(express.json());
+// let storeModel = mongoose.model("stores",storeSchema);
+// let productModel = mongoose.model("products",productSchema);
+// let userModel = mongoose.model("users",userSchema);
 
-add();
+//------------------------------------------------
+// const add = async () => {
+// 	await productModel.deleteMany({});
+// 	await productModel.insertMany(products);
+//     await storeModel.deleteMany({});
+// 	await storeModel.insertMany(stores);
+// 	console.log("added");
+// };
+
+// add();
 //------------------------------------------------
 
 app.get("/store",async (req,res)=>{
@@ -66,7 +69,6 @@ app.post("/register",async(req,res)=>{
     }
 })
 //----------------------------------------------------
-
 app.post("/login",async(req,res)=>{
     const user = await userModel.find({email:req.body.email})
 
@@ -76,7 +78,6 @@ app.post("/login",async(req,res)=>{
     })
 })
 //----------------------------------------------------
-
 app.post("/profile",verifyToken,(req,res)=>{
     jwt.verify(req.token,secretkey,(err,authData)=>{
         if (err) res.send("TOKEN INVALID");
@@ -86,7 +87,6 @@ app.post("/profile",verifyToken,(req,res)=>{
         }
     })
 })
-
 //---------------------------------------------------
 function verifyToken(req,res,next){
     const bearerHeader = req.header('Authorization');
@@ -100,8 +100,6 @@ function verifyToken(req,res,next){
         res.send("Token INVALID");
     }
 }
-
-
 //------------------------------------------------
 
 app.post("/payment", async (req,res)=>{
@@ -127,6 +125,31 @@ app.post("/payment", async (req,res)=>{
     }
 })
 //------------------------------------------------
-app.listen(Port,()=>{
-    console.log("Server Running at Port ",Port);
-})
+// app.listen(Port,()=>{
+//     console.log("Server Running at Port ",Port);
+// })
+
+mongoose
+  .connect(MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB is  connected successfully"))
+  .catch((err) => console.error(err));
+
+app.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
+});
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+app.use(cookieParser());
+
+app.use(express.json());
+
+app.use("/", authRoute);
