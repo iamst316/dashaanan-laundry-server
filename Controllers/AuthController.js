@@ -45,12 +45,14 @@ module.exports.Login = async (req, res, next) => {
       return res.json({message:'Incorrect password or email' }) 
     }
      const token = createSecretToken(user._id);
+    //  console.log("to be logged-->",user);
+
      res.cookie("token", token, {
        withCredentials: true,
        httpOnly: false,
        maxAge : 30*1000,
      });
-     res.status(201).json({ message: "User logged in successfully", success: true });
+     res.status(201).json({ message: "User logged in successfully", success: true, user: user});
      next()
   } catch (error) {
     console.error(error);
