@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-  name:{
-    type:String,
+  name: {
+    type: String,
     required: [true, "Your name is required"],
   },
   email: {
@@ -23,24 +23,24 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: new Date(),
   },
-  addresses:[{
-    stateName:String,
-    city:String,
-    address:String,
+  addresses: [{
+    stateName: String,
+    city: String,
+    address: String,
   }],
   orders: [{
     items: [
       {
         productName: String,
         quantity: Number,
-        washType : Array,
+        washType: Array,
         price: Number,
         total: Number
       }
     ],
-    orderStatus :String,
-    storePhoneNo :String,
-    city :String,
+    orderStatus: String,
+    storePhoneNo: String,
+    city: String,
     userId: String,
     storeAddress: String,
     billAmt: Number,
@@ -49,10 +49,10 @@ const userSchema = new mongoose.Schema({
   }]
 });
 
-userSchema.pre("save", async function () {
+userSchema.pre("save", async function() {
   this.password = await bcrypt.hash(this.password, 12);
-  this.addresses = await [];
-  this.orders = await [];
+  // this.addresses = await [];
+  // this.orders = await [];
 });
 
 module.exports = mongoose.model("User", userSchema);
