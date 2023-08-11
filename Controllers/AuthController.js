@@ -113,3 +113,30 @@ module.exports.addStore = async (req, res, next) => {
     console.error(error);
   }
 }
+
+module.exports.addAddress = async(req,res,next)=>{
+  //fetch user logic
+  try {
+    const {email, address, stateName, city } = req.body;
+    const existingAddress = await User.findOne({ address });
+    const user = await User.findOne({ email });
+    
+    if (existingAddress) {
+      return res.json({ message: "Address already exists" });
+    }
+
+    user.addresses.push({
+      stateName:stateName,
+      city:city,
+      address:address
+    });
+    user.save();
+
+    res
+      .status(201)
+      .json({ message: "Address Added Successfully", success: true, user });
+    next();
+  } catch (error) {
+    console.error(error);
+  } 
+}
