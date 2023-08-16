@@ -54,7 +54,7 @@ module.exports.Login = async (req, res, next) => {
       return res.json({ message: 'Incorrect password or email' })
     }
     const token = createSecretToken(user._id);
-    //  console.log("to be logged-->",user);
+     console.log("to be logged-->",user);
 
     res.cookie("token", token, {
       withCredentials: true,
@@ -124,19 +124,28 @@ module.exports.addAddress = async(req,res,next)=>{
     if (existingAddress) {
       return res.json({ message: "Address already exists" });
     }
+    const newList = user.addresses;
 
-    user.addresses.push({
-      stateName:stateName,
-      city:city,
-      address:address
-    });
-    user.save();
+    newList.push({
+      address: address,
+      stateName: stateName,
+      city: city
+    })
+    
+    const update = { $set: { address: existingAddress } };
+
+    const result = await User.updateOne(user, update);
+    user.save()
 
     res
       .status(201)
-      .json({ message: "Address Added Successfully", success: true, user });
+      .json({ message: "Address Added Successfully", success: true, result });
     next();
   } catch (error) {
     console.error(error);
   } 
 }
+
+
+
+//64dcae39af2a00b8dcb4cedb

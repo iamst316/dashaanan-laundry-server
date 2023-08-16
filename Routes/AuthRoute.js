@@ -8,6 +8,6 @@ router.post('/login', Login);
 router.get("/products",getProducts);
 router.get("/store",getStores);
 router.post("/add-store",addStore);
-router.post("/add-address",addAddress);
+router.patch("/add-address",addAddress);
 
 module.exports = router;
