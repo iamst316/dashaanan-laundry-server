@@ -46,15 +46,16 @@ module.exports.Login = async (req, res, next) => {
       return res.json({ message: 'All fields are required' })
     }
     const user = await User.findOne({ email });
+    console.log(user)
     if (!user) {
       return res.json({ message: 'Incorrect password or email' })
     }
-    const auth = await bcrypt.compare(password, user.password)
+    const auth = bcrypt.compare(password, user.password)
     if (!auth) {
       return res.json({ message: 'Incorrect password or email' })
     }
     const token = createSecretToken(user._id);
-     console.log("to be logged-->",user);
+    console.log("to be logged-->",user);
 
     res.cookie("token", token, {
       withCredentials: true,
@@ -139,13 +140,44 @@ module.exports.addAddress = async(req,res,next)=>{
 
     res
       .status(201)
-      .json({ message: "Address Added Successfully", success: true, result });
+      .json({ message: "Address Added Successfully", success: true, user });
     next();
   } catch (error) {
     console.error(error);
   } 
 }
 
+module.exports.Order = async (req,res,next)=>{
+  try {
+    const {email, items, deliveryAddress, store, orderStatus, billAmt, orderDate  } = req.body;
+    
+    const user = await User.findOne({ email });
+    
+    
+    const existingOrders = user.orders;
 
+    existingOrders.push({
+      items: items,
+      deliveryAddress: deliveryAddress,
+      store: store,
+      orderStatus: orderStatus,
+      billAmt: billAmt,
+      orderDate: orderDate
+    })
+    
+    const update = { $set: { orders: existingOrders } };
 
+    const result = await User.updateOne(user, update);
+    user.save()
+
+    res
+      .status(201)
+      .json({ message: "Ordered Successfully", success: true, user });
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+//64dcae39af2a00b8dcb4cedb
 //64dcae39af2a00b8dcb4cedb

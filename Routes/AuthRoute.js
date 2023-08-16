@@ -1,4 +1,4 @@
-const { Signup,Login, getProducts, getStores, addStore, addAddress } = require("../Controllers/AuthController");
+const { Signup,Login, getProducts, getStores, addStore, addAddress, Order } = require("../Controllers/AuthController");
 const router = require("express").Router();
 const {userVerification} = require("../Middlewares/AuthMiddleware")
 
@@ -9,5 +9,7 @@ router.get("/products",getProducts);
 router.get("/store",getStores);
 router.post("/add-store",addStore);
 router.patch("/add-address",addAddress);
+router.patch("/order",Order);
+
 
 module.exports = router;

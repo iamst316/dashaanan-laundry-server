@@ -38,19 +38,27 @@ const userSchema = new mongoose.Schema({
         total: Number
       }
     ],
+    deliveryAddress:{
+      stateName: String,
+      city: String,
+      address: String,
+    },
+    store:{
+      address: String,
+      delivery_charges: Number,
+      label: String,
+      storeName: String,
+      telephone: Number
+    },
     orderStatus: String,
-    storePhoneNo: String,
-    city: String,
-    userId: String,
-    storeAddress: String,
+    // userId: String,
     billAmt: Number,
-    storeLocation: String,
     orderDate: String
   }]
 });
 
 userSchema.pre("save", async function() {
-  this.password = await bcrypt.hash(this.password, 12);
+  this.password = bcrypt.hash(this.password, 12);
   // this.addresses = await [];
   // this.orders = await [];
 });
