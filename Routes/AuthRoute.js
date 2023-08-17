@@ -1,4 +1,4 @@
-const { Signup,Login, getProducts, getStores, addStore, addAddress, Order, AdminLogin, AddAdmin, addProduct } = require("../Controllers/AuthController");
+const { Signup,Login, getProducts, getStores, addStore, addAddress, Order, AdminLogin, AddAdmin, addProduct, addJob, getJobs } = require("../Controllers/AuthController");
 const router = require("express").Router();
 const {userVerification} = require("../Middlewares/AuthMiddleware")
 
@@ -12,7 +12,8 @@ router.post("/add-product",addProduct);
 router.patch("/add-address",addAddress);
 router.patch("/order",Order);
 router.post("/admin-login",AdminLogin);
-router.post("/add-admin",AddAdmin)
-
+router.post("/add-admin",AddAdmin);
+router.post("/add-job",addJob)
+router.get("/jobs", getJobs);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const User = require("../Models/UserModel");
 const Admin = require("../Models/adminModel");
 const productModel = require("../Models/productModel");
 const storeModel = require("../Models/storeModel");
+const jobModel = require("../Models/jobModel");
 const { createSecretToken } = require("../util/SecretToken");
 const bcrypt = require("bcrypt");
 
@@ -246,6 +247,37 @@ module.exports.AddAdmin = async (req, res, next) => {
     res
       .status(201)
       .json({ message: "User signed in successfully", success: true, user });
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports.addJob = async (req, res, next) => {
+  try {
+
+    const { title, department, location, pay } = req.body;
+    const applicants = [];
+    const closed = false;
+    const newJob = await jobModel.create({ title, department, location, pay, applicants, closed });
+    
+    res
+      .status(201)
+      .json({ message: "store added successfully", success: true, newJob });
+
+    next();
+    
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports.getJobs = async (req, res, next) => {
+  try {
+    const list = await jobModel.find();
+    res
+      .status(201)
+      .send(list);
     next();
   } catch (error) {
     console.error(error);
