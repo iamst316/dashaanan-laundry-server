@@ -1,4 +1,5 @@
 const User = require("../Models/UserModel");
+const Admin = require("../Models/adminModel");
 const productModel = require("../Models/productModel");
 const storeModel = require("../Models/storeModel");
 const { createSecretToken } = require("../util/SecretToken");
@@ -101,14 +102,29 @@ module.exports.addStore = async (req, res, next) => {
       return res.json({ message: "Store already exists" });
     }
     const store = await storeModel.create({ storeName, label, address, telephone, delivery_charges });
-    // const token = createSecretToken(user._id);
-    // res.cookie("token", token, {
-    //   withCredentials: true,
-    //   httpOnly: false,
-    // });
+    
     res
       .status(201)
       .json({ message: "store added successfully", success: true, store });
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports.addProduct = async (req, res, next) => {
+  try {
+
+    const { productName, description, price, addOn } = req.body;
+    const existingProduct = await productModel.findOne({ storeName });
+    if (existingProduct) {
+      return res.json({ message: "Product already exists" });
+    }
+    const newProduct = await productModel.create({ productName, description, price, addOn });
+    
+    res
+      .status(201)
+      .json({ message: "store added successfully", success: true, newProduct });
     next();
   } catch (error) {
     console.error(error);
@@ -179,5 +195,59 @@ module.exports.Order = async (req,res,next)=>{
   }
 }
 
-//64dcae39af2a00b8dcb4cedb
-//64dcae39af2a00b8dcb4cedb
+module.exports.AdminLogin = async (req, res, next) => {
+  try {
+    const { codeName, password } = req.body;
+    if (!codeName || !password) {
+      return res.json({ message: 'All fields are required' })
+    }
+    const admin = await Admin.findOne({ codeName });
+    // console.log(user)
+    if (!admin) {
+      return res.json({ message: 'Incorrect password or Code Name' })
+    }
+    const auth = bcrypt.compare(password, admin.password)
+    if (!auth) {
+      return res.json({ message: 'Incorrect password or Code Name' })
+    }
+    const token = createSecretToken(admin._id);
+    // console.log("to be logged-->",admin);
+
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
+      maxAge: 30 * 1000,
+    });
+    res.status(201).json({ message: "Admin logged in successfully", success: true, admin: admin });
+    next()
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+module.exports.AddAdmin = async (req, res, next) => {
+  try {
+    const { email,codeName, password,name } = req.body;
+    const existingAdmin = await Admin.findOne({ email });
+    if (existingAdmin) {
+      return res.json({ message: "Admin already exists" });
+    }
+    const createdAt = new Date();
+    const user = await Admin.create({ email, password, name, createdAt, codeName});
+    const token = createSecretToken(user._id);
+    // user.save()
+    console.log("ADMIN-->", user);
+
+    res.cookie("token", token, {
+      withCredentials: true,
+      httpOnly: false,
+      maxAge: 30 * 1000,
+    });
+    res
+      .status(201)
+      .json({ message: "User signed in successfully", success: true, user });
+    next();
+  } catch (error) {
+    console.error(error);
+  }
+};
