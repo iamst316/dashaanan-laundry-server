@@ -51,7 +51,6 @@ const userSchema = new mongoose.Schema({
       telephone: Number
     },
     orderStatus: String,
-    // userId: String,
     billAmt: Number,
     orderDate: String
   }]
@@ -59,8 +58,6 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre("save", async function() {
   this.password = bcrypt.hash(this.password, 12);
-  // this.addresses = await [];
-  // this.orders = await [];
 });
 
 module.exports = mongoose.model("User", userSchema);
