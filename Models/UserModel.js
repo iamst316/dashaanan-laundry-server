@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema({
       {
         productName: String,
         quantity: Number,
-        washType: Array,
+        addOn: Array,
         price: Number,
         total: Number
       }

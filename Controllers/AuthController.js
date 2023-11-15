@@ -57,7 +57,7 @@ module.exports.Login = async (req, res, next) => {
       return res.json({ message: 'Incorrect password or email' })
     }
     const token = createSecretToken(user._id);
-    console.log("to be logged-->",user);
+    console.log("to be logged-->", user);
 
     res.cookie("token", token, {
       withCredentials: true,
@@ -103,7 +103,7 @@ module.exports.addStore = async (req, res, next) => {
       return res.json({ message: "Store already exists" });
     }
     const store = await storeModel.create({ storeName, label, address, telephone, delivery_charges });
-    
+
     res
       .status(201)
       .json({ message: "store added successfully", success: true, store });
@@ -122,7 +122,7 @@ module.exports.addProduct = async (req, res, next) => {
       return res.json({ message: "Product already exists" });
     }
     const newProduct = await productModel.create({ productName, description, price, addOn });
-    
+
     res
       .status(201)
       .json({ message: "store added successfully", success: true, newProduct });
@@ -132,13 +132,13 @@ module.exports.addProduct = async (req, res, next) => {
   }
 }
 
-module.exports.addAddress = async(req,res,next)=>{
+module.exports.addAddress = async (req, res, next) => {
   //fetch user logic
   try {
-    const {email, address, stateName, city } = req.body;
+    const { email, address, stateName, city } = req.body;
     const existingAddress = await User.findOne({ address });
     const user = await User.findOne({ email });
-    
+
     if (existingAddress) {
       return res.json({ message: "Address already exists" });
     }
@@ -149,7 +149,7 @@ module.exports.addAddress = async(req,res,next)=>{
       stateName: stateName,
       city: city
     })
-    
+
     const update = { $set: { address: existingAddress } };
 
     const result = await User.updateOne(user, update);
@@ -161,16 +161,16 @@ module.exports.addAddress = async(req,res,next)=>{
     next();
   } catch (error) {
     console.error(error);
-  } 
+  }
 }
 
-module.exports.Order = async (req,res,next)=>{
+module.exports.Order = async (req, res, next) => {
   try {
-    const {email, items, deliveryAddress, store, orderStatus, billAmt, orderDate  } = req.body;
-    
+    const { email, items, deliveryAddress, store, orderStatus, billAmt, orderDate } = req.body;
+
     const user = await User.findOne({ email });
-    
-    
+
+
     const existingOrders = user.orders;
 
     existingOrders.push({
@@ -181,7 +181,7 @@ module.exports.Order = async (req,res,next)=>{
       billAmt: billAmt,
       orderDate: orderDate
     })
-    
+
     const update = { $set: { orders: existingOrders } };
 
     const result = await User.updateOne(user, update);
@@ -228,13 +228,13 @@ module.exports.AdminLogin = async (req, res, next) => {
 
 module.exports.AddAdmin = async (req, res, next) => {
   try {
-    const { email,codeName, password,name } = req.body;
+    const { email, codeName, password, name } = req.body;
     const existingAdmin = await Admin.findOne({ email });
     if (existingAdmin) {
       return res.json({ message: "Admin already exists" });
     }
     const createdAt = new Date();
-    const user = await Admin.create({ email, password, name, createdAt, codeName});
+    const user = await Admin.create({ email, password, name, createdAt, codeName });
     const token = createSecretToken(user._id);
     // user.save()
     console.log("ADMIN-->", user);
@@ -260,13 +260,13 @@ module.exports.addJob = async (req, res, next) => {
     const applicants = [];
     const closed = false;
     const newJob = await jobModel.create({ title, department, location, pay, applicants, closed });
-    
+
     res
       .status(201)
       .json({ message: "store added successfully", success: true, newJob });
 
     next();
-    
+
   } catch (error) {
     console.error(error);
   }
