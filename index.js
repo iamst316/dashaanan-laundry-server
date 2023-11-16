@@ -45,7 +45,7 @@ app.listen(PORT, () => {
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173","https://dashaanan-laundry-ui.onrender.com"],
     methods: ["GET", "POST", "PUT", "DELETE","PATCH"],
     credentials: true,
     exposedHeaders: ['Set-Cookie'],
